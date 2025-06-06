@@ -1,14 +1,9 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import { Button } from "./components/ui/button";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <div className="bg-red-500">
+      {/* <div className="bg-red-500">
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
@@ -18,7 +13,24 @@ function App() {
       </div>
       <h1 className="text-3xl font-bold underline">Vite + React</h1>
       <div className="card">
-        <Button className="bg-red-500">Click me</Button>
+        <Button className="bg-red-500" onClick={() => getProducts()}>
+          View all Products
+        </Button>
+        <Button className="bg-red-500" onClick={() => addCategory("phones")}>
+          add category
+        </Button>
+
+        <Button
+          className="bg-red-500"
+          onClick={() =>
+            addProduct({ name: "oppo122", categoryIds: [4, 5], price: 1000 })
+          }
+        >
+          add product
+        </Button>
+        <Button className="bg-red-500" onClick={() => deleteProduct(7)}>
+          Delete Product
+        </Button>
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
@@ -28,7 +40,9 @@ function App() {
       </div>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
-      </p>
+      </p> */}
+
+      <Dashboard />
     </>
   );
 }
