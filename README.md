@@ -43,7 +43,7 @@
 ### Database Setup
 
 1. Create a PostgreSQL database
-2. Update the `.env` file in the backend directory with your database credentials (view env.example for reference). The website uses [Neon tech](https://neon.tech) for the database connection.
+2. Add / Update the `.env` file in the backend directory with your database credentials (view env.example for reference). The website uses [Neon tech](https://neon.tech) for the database connection.
 3. Run database migrations:
    ```bash
    'root folder'
