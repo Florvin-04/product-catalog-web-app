@@ -208,7 +208,7 @@ const AddEditProductForm = (props: AddEditProductFormProps) => {
                     <div className="flex items-center border-b px-3">
                       <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
                       <Input
-                        placeholder="Search categories..."
+                        placeholder="Search or Add categories..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -221,7 +221,7 @@ const AddEditProductForm = (props: AddEditProductFormProps) => {
                             No categories found.
                           </p>
                           <Button
-                            disabled={isAddingCategory}
+                            disabled={isAddingCategory || !searchQuery.trim()}
                             isLoading={isAddingCategory}
                             type="button"
                             className="text-center text-sm w-fit"
