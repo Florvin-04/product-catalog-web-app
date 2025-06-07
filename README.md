@@ -9,6 +9,7 @@
 - React (Vite)
 - TypeScript
 - Tailwind CSS
+- Shadcn
 - Axios
 - Tanstack Query
 - Sonner (Toast notifications)
