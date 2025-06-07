@@ -66,7 +66,7 @@ DATABASE_URL=postgresql://user:password@localhost:5432/database_name
 
 ## Running the Application
 
-Backend running on http://localhost:5000 \n
+Backend running on http://localhost:5000 \\n
 Frontend running on http://localhost:5173
 
 1. Start both frontend and backend servers:
