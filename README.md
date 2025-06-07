@@ -1,4 +1,4 @@
-"# product-catalog-web-app"
+
 
 # Product Catalog Web Application
 
