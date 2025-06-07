@@ -40,8 +40,6 @@ const AddEditProductForm = (props: AddEditProductFormProps) => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  console.log({ searchQuery });
-
   const { data: categories, isLoading } = useGetCategories();
   const { mutate: addProductMutation, isPending: isAddingProduct } =
     useMutateAddProduct();
@@ -143,7 +141,7 @@ const AddEditProductForm = (props: AddEditProductFormProps) => {
           name="price"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Price</FormLabel>
+              <FormLabel>Price (PHP)</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Product Price"

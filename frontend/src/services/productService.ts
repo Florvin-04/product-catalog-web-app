@@ -190,8 +190,6 @@ export const useMutateAddProduct = () => {
             data: [newProduct.data, ...oldData.data],
           };
 
-          console.log("returnValue", returnValue);
-
           return returnValue;
         }
       );
@@ -323,8 +321,12 @@ export const useMutateEditProduct = () => {
         },
       });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Product update failed", error);
+
+      toast.error("Failed", {
+        description: error.response?.data.message,
+      });
     },
     onSettled: () => {
       console.log("Product update mutation completed");
@@ -433,11 +435,10 @@ export const useMutateDeleteProduct = () => {
       });
     },
 
-    onError: (error) => {
-      console.error("onError", error);
-    },
-    onSettled: () => {
-      console.log("Mutation settled");
+    onError: (error: any) => {
+      toast.error("Failed", {
+        description: error.response?.data.message,
+      });
     },
   });
 };

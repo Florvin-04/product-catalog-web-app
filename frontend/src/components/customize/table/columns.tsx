@@ -16,15 +16,24 @@ export const columns: ColumnDef<Column>[] = [
   },
   {
     accessorKey: "price",
-    header: "Price",
+    header: "Price (PHP)",
+    cell: ({ row }) => {
+      return row.original.price.toLocaleString("en-US", {
+        style: "currency",
+        currency: "PHP",
+      });
+    },
   },
+
   {
     accessorKey: "categories",
     header: "Categories",
     cell: ({ row }) => {
-      return row.original.categories
-        .map((category) => category.name)
-        .join(", ");
+      return (
+        <div className="whitespace-normal break-words max-w-[90%]">
+          {row.original.categories.map((category) => category.name).join(", ")}
+        </div>
+      );
     },
   },
 
