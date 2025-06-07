@@ -56,13 +56,13 @@
 Create `.env` files in both frontend and backend directories:
 
 **Frontend (.env)**
-
+exactly like this to run locally
 ```bash
 DATABASE_URL=http://localhost:5000
 ```
 
 **Backend (.env)**
-
+should be your own Database url
 ```bash
 DATABASE_URL=postgresql://user:password@localhost:5432/database_name
 ```
