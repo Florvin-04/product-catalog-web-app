@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useGetProductsQuery } from "@/services/productService";
 import { useGetCategories } from "@/services/categoryService";
 import { useState } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, X } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -27,13 +27,6 @@ function Dashboard() {
   >([]);
   const [open, setOpen] = useState(false);
 
-  console.log({
-    selectedCategories:
-      selectedCategories.length > 0
-        ? selectedCategories.map((cat) => cat.id)
-        : undefined,
-  });
-
   const { data: categories } = useGetCategories();
   const { data: products, isLoading } = useGetProductsQuery({
     categoryIds:
@@ -52,7 +45,7 @@ function Dashboard() {
   });
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-8 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Popover open={open} onOpenChange={setOpen}>
@@ -125,10 +118,25 @@ function Dashboard() {
         <AddProduct />
       </div>
 
-      <div className="space-x-2">
+      <div className="flex items-center gap-2">
         {selectedCategories.map((category) => (
-          <Badge key={category.id} variant="secondary" className="text-xs">
-            {category.name}
+          <Badge
+            key={category.id}
+            variant="secondary"
+            className="text-xs flex items-center gap-2 py-[.1rem]"
+          >
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-2 w-2 "
+              onClick={() => {
+                setSelectedCategories(
+                  selectedCategories.filter((cat) => cat.id !== category.id)
+                );
+              }}
+              icon={<X className="size-[.6rem]" />}
+            />
+            <span>{category.name}</span>
           </Badge>
         ))}
       </div>

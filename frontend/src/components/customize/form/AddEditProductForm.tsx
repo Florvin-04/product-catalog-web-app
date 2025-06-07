@@ -25,7 +25,7 @@ import { Check, ChevronsUpDown, Search, X } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { useGetCategories } from "@/services/categoryService";
+import { useAddCategory, useGetCategories } from "@/services/categoryService";
 import {
   useMutateAddProduct,
   useMutateEditProduct,
@@ -40,12 +40,17 @@ const AddEditProductForm = (props: AddEditProductFormProps) => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  console.log({ searchQuery });
+
   const { data: categories, isLoading } = useGetCategories();
   const { mutate: addProductMutation, isPending: isAddingProduct } =
     useMutateAddProduct();
 
   const { mutate: editProductMutation, isPending: isEditingProduct } =
     useMutateEditProduct();
+
+  const { mutate: addCategoryMutation, isPending: isAddingCategory } =
+    useAddCategory();
 
   const categoriesOptions = categories?.data ?? [];
 
@@ -69,9 +74,11 @@ const AddEditProductForm = (props: AddEditProductFormProps) => {
       "categories",
       selectedCategories.filter(
         (category) => category.id !== categoryToRemove.id
-      )
+      ),
+      { shouldDirty: true }
     );
   };
+
   const onSubmit = (data: AddProductSchema) => {
     const result = AddProductZodSchema.safeParse(data);
     if (!result.success) {
@@ -211,8 +218,21 @@ const AddEditProductForm = (props: AddEditProductFormProps) => {
                     </div>
                     <div className="max-h-60 overflow-auto p-1">
                       {filteredCategories.length === 0 ? (
-                        <div className="py-6 text-center text-sm text-muted-foreground">
-                          No categories found.
+                        <div className="flex flex-col items-center justify-center">
+                          <p className="py-6 text-center text-sm text-muted-foreground">
+                            No categories found.
+                          </p>
+                          <Button
+                            disabled={isAddingCategory}
+                            isLoading={isAddingCategory}
+                            type="button"
+                            className="text-center text-sm w-fit"
+                            onClick={() => {
+                              addCategoryMutation(searchQuery);
+                            }}
+                          >
+                            Add Category.
+                          </Button>
                         </div>
                       ) : (
                         filteredCategories.map((category) => {

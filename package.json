@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "concurrently \"cd frontend && npm install\" \"cd backend && npm install\"",
     "client": "cd frontend && npm run dev",
     "server": "cd backend && npm start",
-    "start": "concurrently \"npm run server\" \"npm run client\""
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "generate": "cd backend && npm run generate",
+    "migrate": "cd backend && npm run migrate"
   },
   "keywords": [],
   "author": "",
