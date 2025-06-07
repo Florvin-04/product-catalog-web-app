@@ -34,7 +34,7 @@
 
 ### Installation
 
-1. Clone the repository cd product-catalog-web-app
+1. Clone the repository and cd product-catalog-web-app
 2. Install dependencies:
    ```bash
    npm install '(to install both frontend and backend dependencies)'
