@@ -29,22 +29,24 @@
 - PostgreSQL
 - npm (v9 or higher)
 
+
+
 ### Installation
 
-1. Clone the repository
+1. Clone the repository cd product-catalog-web-app
 2. Install dependencies:
    ```bash
-   npm run install '(to install both frontend and backend dependencies)'
+   npm install '(to install both frontend and backend dependencies)'
    ```
 
 ### Database Setup
 
 1. Create a PostgreSQL database
-2. Update the `.env` file in the backend directory with your database credentials (view env.example for reference)
+2. Update the `.env` file in the backend directory with your database credentials (view env.example for reference). The website uses [Neon tech](https://neon.tech) for the database connection.
 3. Run database migrations:
    ```bash
    'root folder'
-   npmr run generate
+   npm run generate
    npm run migrate
    ```
 
