@@ -11,6 +11,7 @@ import { toast } from "sonner";
 
 type GetProductsPayload = {
   categoryIds?: number[];
+  name?: string;
 };
 
 type AddProductPayload = {
@@ -90,7 +91,7 @@ export const useGetProductsQuery = (payload?: GetProductsPayload) => {
   return useQuery({
     // Use category IDs as part of query key to create unique cache entries
     // for different category filters
-    queryKey: ["products", payload?.categoryIds],
+    queryKey: ["products", payload?.categoryIds, payload?.name],
 
     // Query function that calls getProducts API with optional payload
     queryFn: () => getProducts(payload),
@@ -98,6 +99,18 @@ export const useGetProductsQuery = (payload?: GetProductsPayload) => {
     // Set staleTime to Infinity to prevent automatic background refetching
     // since we want to manually control when products data is refreshed
     staleTime: Infinity,
+
+    // Select the data from the response and map it to the desired format
+    select: (response) => {
+      return response.data.map((product) => {
+        return {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          categories: product.categories,
+        };
+      });
+    },
   });
 };
 

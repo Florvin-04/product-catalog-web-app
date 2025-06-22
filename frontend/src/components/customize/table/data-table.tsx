@@ -29,6 +29,7 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    columnResizeMode: "onChange",
   });
 
   if (isLoading) {
@@ -76,7 +77,12 @@ export function DataTable<TData, TValue>({
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    style={{
+                      width: header.column.getSize(),
+                    }}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(

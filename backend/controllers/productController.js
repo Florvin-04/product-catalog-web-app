@@ -1,5 +1,5 @@
 import { categories } from "../database/schema/category.js";
-import { desc, eq, inArray } from "drizzle-orm";
+import { desc, eq, inArray, ilike } from "drizzle-orm";
 import { products } from "../database/schema/product.js";
 import { productCategories } from "../database/schema/productCategory.js";
 import { reformatCategoryNameResponse } from "../helpers/reformatCategoryName.js";
@@ -53,7 +53,7 @@ import { db } from "../database/db.js";
  */
 
 export const getProducts = async (req, res) => {
-  let { categoryIds } = req.query;
+  let { categoryIds, name: productNameSearch } = req.query;
 
   // Parse categoryIds if provided
   if (categoryIds) {
@@ -64,8 +64,6 @@ export const getProducts = async (req, res) => {
 
   // If category filter is provided
   if (categoryIds && categoryIds.length > 0) {
-    console.log("categoryIdss", categoryIds);
-
     // Step 1: Find product-category pairs for filter
     const rows = await db
       .select({
@@ -78,6 +76,8 @@ export const getProducts = async (req, res) => {
     // Group by productId and count how many of the required categories it has
     const countMap = new Map();
 
+    console.log("rows", rows);
+
     for (const row of rows) {
       if (!countMap.has(row.productId)) {
         countMap.set(row.productId, new Set());
@@ -85,10 +85,16 @@ export const getProducts = async (req, res) => {
       countMap.get(row.productId).add(row.categoryId);
     }
 
+    console.log("countMap", countMap);
+
+    console.log("map entries", Array.from(countMap.entries()));
+
     // Keep only products that matched *all* required categories
     matchingProductIds = Array.from(countMap.entries())
       .filter(([_, catSet]) => categoryIds.every((id) => catSet.has(id)))
       .map(([productId]) => productId);
+
+    console.log("matchingProductIds", matchingProductIds);
 
     // Return empty array if no products match all categories
     if (matchingProductIds.length === 0) {
@@ -116,10 +122,29 @@ export const getProducts = async (req, res) => {
     baseQuery = baseQuery.where(inArray(products.id, matchingProductIds));
   }
 
+  if (productNameSearch) {
+    baseQuery = baseQuery.where(ilike(products.name, `%${productNameSearch}%`));
+  }
+
   const rows = await baseQuery;
+
+  const newQuery = await db
+    .select({
+      product: products,
+      // category: categories,
+      productCategory: productCategories,
+    })
+    .from(products)
+    .innerJoin(productCategories, eq(products.id, productCategories.productId))
+    // .innerJoin(categories, eq(categories.id, productCategories.categoryId))
+    .orderBy(desc(products.createdAt));
+
+  console.log("newQuery", newQuery);
 
   // Step 3: Group products and include all their categories
   let productMap = new Map();
+
+  // console.log("rows", rows);
 
   for (const row of rows) {
     const product = row.product;
@@ -139,6 +164,8 @@ export const getProducts = async (req, res) => {
       name: reformatCategoryNameResponse(category.name),
     });
   }
+
+  // console.log("productMap", productMap.values());
 
   // Return success response with products data
   res.json({
@@ -203,8 +230,6 @@ export const addProduct = async (req, res) => {
     .select({ id: categories.id })
     .from(categories)
     .where(inArray(categories.id, categoryIds));
-
-  console.log({ existingCategories });
 
   if (existingCategories.length === 0) {
     return res.status(400).json({

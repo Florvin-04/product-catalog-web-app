@@ -9,7 +9,7 @@
  * @example
  *  Returns "category_name"
  * reformatCategoryNameInput("Category Name")
- * 
+ *
  *  Returns "category"
  * reformatCategoryNameInput("Category")
  */
@@ -37,12 +37,11 @@ export const reformatCategoryNameInput = (name) => {
  * @example
  *  Returns "category name"
  * reformatCategoryNameResponse("category_name")
- * 
+ *
  *  Returns "category"
  * reformatCategoryNameResponse("category")
  */
 export const reformatCategoryNameResponse = (name) => {
-  console.log({ name }, "returning");
   if (!name) return null;
 
   const lowerCaseName = name.toLowerCase();

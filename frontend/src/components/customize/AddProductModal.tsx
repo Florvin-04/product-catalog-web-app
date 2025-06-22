@@ -6,12 +6,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import AddEditProductForm from "./form/addEditProductForm";
+import AddEditProductForm from "./form/AddEditProductForm";
 
 const AddProductModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <>
+    <div className="self-start">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>
           <DialogHeader>
@@ -21,7 +21,7 @@ const AddProductModal = () => {
         </DialogContent>
       </Dialog>
       <Button onClick={() => setIsOpen(true)}>Add Product</Button>
-    </>
+    </div>
   );
 };
 

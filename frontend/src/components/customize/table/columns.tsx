@@ -1,6 +1,7 @@
 import type { Category } from "@/lib/types";
 import type { ColumnDef } from "@tanstack/react-table";
 import TableAction from "./tableAction";
+import { Badge } from "@/components/ui/badge";
 
 export type Column = {
   id: number;
@@ -13,6 +14,7 @@ export const columns: ColumnDef<Column>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    size: 50,
   },
   {
     accessorKey: "price",
@@ -23,6 +25,7 @@ export const columns: ColumnDef<Column>[] = [
         currency: "PHP",
       });
     },
+    size: 50,
   },
 
   {
@@ -31,7 +34,19 @@ export const columns: ColumnDef<Column>[] = [
     cell: ({ row }) => {
       return (
         <div className="whitespace-normal break-words max-w-[90%]">
-          {row.original.categories.map((category) => category.name).join(", ")}
+          <div className="flex items-center gap-1 flex-wrap">
+            {row.original.categories.map((category) => (
+              <Badge
+                key={category.id}
+                variant="secondary"
+                className="capitalize"
+              >
+                {/* <span className="text-xs flex justify-center items-center"> */}
+                {category.name}
+                {/* </span> */}
+              </Badge>
+            ))}
+          </div>
         </div>
       );
     },
@@ -44,5 +59,6 @@ export const columns: ColumnDef<Column>[] = [
 
       return <TableAction product={product} />;
     },
+    size: 10,
   },
 ];
