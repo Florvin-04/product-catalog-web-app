@@ -58,7 +58,7 @@ Create `.env` files in both frontend and backend directories:
 **Frontend (.env)**
 exactly like this to run locally
 ```bash
-DATABASE_URL=http://localhost:5000
+VITE_API_URL=http://localhost:5000/
 ```
 
 **Backend (.env)**
