@@ -10,11 +10,34 @@ import {
   editProduct,
   getProducts,
 } from "./controllers/productController.js";
+import { authenticateAccessToken } from "./middlewares/authentication.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const port = 5000;
 
+const allowedOrigins = ["http://localhost:5173"];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      console.log("=== CORS Check ===");
+      console.log("Origin:", origin);
+      // console.log("Request method:", req?.method);
+      // console.log("Request headers:", req?.headers);
+      console.log("==================");
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Blocked by CORS: Origin not allowed"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 // 🔽 Disable caching for all responses
+
 app.use((req, res, next) => {
   res.set(
     "Cache-Control",
@@ -25,13 +48,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(
-  cors({
-    origin: "http://localhost:5173", // frontend origin
-    credentials: true, // if you use cookies or auth headers
-  })
-);
 app.use(express.json());
+
+app.use(cookieParser()); // 👈 adds req.cookies
 
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from backend!" });

@@ -4,6 +4,7 @@ import { products } from "../database/schema/product.js";
 import { productCategories } from "../database/schema/productCategory.js";
 import { reformatCategoryNameResponse } from "../helpers/reformatCategoryName.js";
 import { db } from "../database/db.js";
+import { setAuthCookies } from "../middlewares/setAuth.js";
 
 /**
  * @function getProducts
@@ -54,6 +55,9 @@ import { db } from "../database/db.js";
 
 export const getProducts = async (req, res) => {
   let { categoryIds, name: productNameSearch } = req.query;
+  const { user } = req;
+
+  console.log("user", user);
 
   // Parse categoryIds if provided
   if (categoryIds) {
@@ -138,8 +142,6 @@ export const getProducts = async (req, res) => {
     .innerJoin(productCategories, eq(products.id, productCategories.productId))
     // .innerJoin(categories, eq(categories.id, productCategories.categoryId))
     .orderBy(desc(products.createdAt));
-
-  console.log("newQuery", newQuery);
 
   // Step 3: Group products and include all their categories
   let productMap = new Map();
@@ -276,6 +278,8 @@ export const addProduct = async (req, res) => {
     .innerJoin(products, eq(products.id, productCategories.productId))
     .innerJoin(categories, eq(categories.id, productCategories.categoryId))
     .where(eq(productCategories.productId, newProduct.id));
+
+  setAuthCookies(res, { id: newProduct.id });
 
   // Return success response with product data
   res.json({
