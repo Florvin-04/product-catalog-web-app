@@ -1,6 +1,10 @@
 import jwt from "jsonwebtoken";
+import { Response } from "express";
 
-export const setAuthCookies = (res, payload = { id: "anonymous" }) => {
+export const setAuthCookies = (
+  res: Response,
+  payload = { id: "anonymous" }
+) => {
   const accessToken = jwt.sign(payload, process.env.JWT_SECRET || "mySecret", {
     expiresIn: "60s", // 1 minute
   });

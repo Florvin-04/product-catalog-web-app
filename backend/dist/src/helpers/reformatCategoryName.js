@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.reformatCategoryNameResponse = exports.reformatCategoryNameInput = void 0;
 /**
  * @function reformatCategoryNameInput
  * @description Converts a category name from a human-readable format to a database-friendly format.
@@ -13,19 +16,17 @@
  *  Returns "category"
  * reformatCategoryNameInput("Category")
  */
-export const reformatCategoryNameInput = (name) => {
-  if (!name) return null;
-
-  const lowerCaseName = name.toLowerCase();
-  if (
-    typeof lowerCaseName === "string" &&
-    lowerCaseName.split(" ").length >= 2
-  ) {
-    return lowerCaseName.split(" ").join("_").trim();
-  }
-  return lowerCaseName;
+const reformatCategoryNameInput = (name) => {
+    if (!name)
+        return null;
+    const lowerCaseName = name.toLowerCase();
+    if (typeof lowerCaseName === "string" &&
+        lowerCaseName.split(" ").length >= 2) {
+        return lowerCaseName.split(" ").join("_").trim();
+    }
+    return lowerCaseName;
 };
-
+exports.reformatCategoryNameInput = reformatCategoryNameInput;
 /**
  * @function reformatCategoryNameResponse
  * @description Converts a category name from a database-friendly format to a human-readable format.
@@ -41,15 +42,14 @@ export const reformatCategoryNameInput = (name) => {
  *  Returns "category"
  * reformatCategoryNameResponse("category")
  */
-export const reformatCategoryNameResponse = (name) => {
-  if (!name) return null;
-
-  const lowerCaseName = name.toLowerCase();
-  if (
-    typeof lowerCaseName === "string" &&
-    lowerCaseName.split("_").length >= 2
-  ) {
-    return lowerCaseName.split("_").join(" ").trim();
-  }
-  return lowerCaseName;
+const reformatCategoryNameResponse = (name) => {
+    if (!name)
+        return null;
+    const lowerCaseName = name.toLowerCase();
+    if (typeof lowerCaseName === "string" &&
+        lowerCaseName.split("_").length >= 2) {
+        return lowerCaseName.split("_").join(" ").trim();
+    }
+    return lowerCaseName;
 };
+exports.reformatCategoryNameResponse = reformatCategoryNameResponse;

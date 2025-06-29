@@ -5,6 +5,7 @@ import {
   reformatCategoryNameInput,
   reformatCategoryNameResponse,
 } from "../helpers/reformatCategoryName.js";
+import { Request, Response } from "express";
 
 /**
  * @function getCategories
@@ -29,7 +30,7 @@ import {
  *   ]
  * }
  */
-export const getCategories = async (req, res) => {
+export const getCategories = async (req: Request, res: Response) => {
   const allCategories = await db
     .select({
       id: categories.id,
@@ -84,16 +85,18 @@ export const getCategories = async (req, res) => {
  *   "status": "error"
  * }
  */
-export const addCategory = async (req, res) => {
+export const addCategory = async (req: Request, res: Response) => {
   const { name } = req.body;
-  if (!name) {
-    return res.status(400).json({
-      message: "Name is required",
-      status: "error",
-    });
-  }
 
   const formattedCategoryName = reformatCategoryNameInput(name);
+
+  if (!formattedCategoryName) {
+    res.status(400).json({
+      message: "Invalid category name",
+      status: "error",
+    });
+    return;
+  }
 
   const existingCategory = await db
     .select()
@@ -101,10 +104,11 @@ export const addCategory = async (req, res) => {
     .where(eq(categories.name, formattedCategoryName));
 
   if (existingCategory.length > 0) {
-    return res.status(400).json({
+    res.status(400).json({
       message: "Category already exists",
       status: "error",
     });
+    return;
   }
 
   const category = await db

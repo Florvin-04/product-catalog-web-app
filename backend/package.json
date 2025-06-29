@@ -2,10 +2,9 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
+    "start": "node ./dist/src/index.js",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit push",
     "build": "tsc"
@@ -24,7 +23,11 @@
     "pg": "^8.16.0"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.0.7",
     "@types/pg": "^8.15.4",
     "drizzle-kit": "^0.31.1",
     "typescript": "^5.8.3"

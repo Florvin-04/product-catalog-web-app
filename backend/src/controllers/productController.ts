@@ -5,6 +5,8 @@ import { productCategories } from "../database/schema/productCategory.js";
 import { reformatCategoryNameResponse } from "../helpers/reformatCategoryName.js";
 import { db } from "../database/db.js";
 import { setAuthCookies } from "../middlewares/setAuth.js";
+import { Request, Response } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 /**
  * @function getProducts
@@ -53,18 +55,29 @@ import { setAuthCookies } from "../middlewares/setAuth.js";
  * 
  */
 
-export const getProducts = async (req, res) => {
+interface GetProductsRequest extends Request {
+  query: {
+    categoryIds?: string;
+    name?: string;
+  };
+
+  user?: string | JwtPayload;
+}
+
+export const getProducts = async (req: GetProductsRequest, res: Response) => {
   let { categoryIds, name: productNameSearch } = req.query;
   const { user } = req;
 
   console.log("user", user);
+
+  const categoryIdsArray: number[] = categoryIds ? JSON.parse(categoryIds) : [];
 
   // Parse categoryIds if provided
   if (categoryIds) {
     categoryIds = JSON.parse(categoryIds);
   }
 
-  let matchingProductIds = [];
+  let matchingProductIds: number[] = [];
 
   // If category filter is provided
   if (categoryIds && categoryIds.length > 0) {
@@ -75,10 +88,10 @@ export const getProducts = async (req, res) => {
         categoryId: productCategories.categoryId,
       })
       .from(productCategories)
-      .where(inArray(productCategories.categoryId, categoryIds));
+      .where(inArray(productCategories.categoryId, categoryIdsArray));
 
     // Group by productId and count how many of the required categories it has
-    const countMap = new Map();
+    const countMap = new Map<number, Set<number>>();
 
     console.log("rows", rows);
 
@@ -86,7 +99,7 @@ export const getProducts = async (req, res) => {
       if (!countMap.has(row.productId)) {
         countMap.set(row.productId, new Set());
       }
-      countMap.get(row.productId).add(row.categoryId);
+      countMap.get(row.productId)?.add(row.categoryId);
     }
 
     console.log("countMap", countMap);
@@ -95,18 +108,19 @@ export const getProducts = async (req, res) => {
 
     // Keep only products that matched *all* required categories
     matchingProductIds = Array.from(countMap.entries())
-      .filter(([_, catSet]) => categoryIds.every((id) => catSet.has(id)))
+      .filter(([_, catSet]) => categoryIdsArray.every((id) => catSet.has(id)))
       .map(([productId]) => productId);
 
     console.log("matchingProductIds", matchingProductIds);
 
     // Return empty array if no products match all categories
     if (matchingProductIds.length === 0) {
-      return res.json({
+      res.json({
         message: "No products found",
         status: "success",
         data: [],
       });
+      return;
     }
   }
 
@@ -122,12 +136,16 @@ export const getProducts = async (req, res) => {
     .orderBy(desc(products.createdAt));
 
   // Apply category filter if provided
-  if (categoryIds && categoryIds.length > 0) {
-    baseQuery = baseQuery.where(inArray(products.id, matchingProductIds));
+  if (categoryIdsArray && categoryIdsArray.length > 0) {
+    baseQuery = baseQuery.where(
+      inArray(products.id, matchingProductIds)
+    ) as any;
   }
 
   if (productNameSearch) {
-    baseQuery = baseQuery.where(ilike(products.name, `%${productNameSearch}%`));
+    baseQuery = baseQuery.where(
+      ilike(products.name, `%${productNameSearch}%`)
+    ) as any;
   }
 
   const rows = await baseQuery;
@@ -211,7 +229,7 @@ export const getProducts = async (req, res) => {
  *   }
  * }
  */
-export const addProduct = async (req, res) => {
+export const addProduct = async (req: Request, res: Response) => {
   const { name, price, categoryIds } = req.body;
 
   // Check if product with same name already exists
@@ -221,10 +239,11 @@ export const addProduct = async (req, res) => {
     .where(eq(products.name, name));
 
   if (existingProduct.length > 0) {
-    return res.status(400).json({
+    res.status(400).json({
       message: "Product already exists",
       status: "error",
     });
+    return;
   }
 
   // Validate that provided category IDs exist in database
@@ -234,10 +253,11 @@ export const addProduct = async (req, res) => {
     .where(inArray(categories.id, categoryIds));
 
   if (existingCategories.length === 0) {
-    return res.status(400).json({
+    res.status(400).json({
       message: "Category not found",
       status: "error",
     });
+    return;
   }
 
   /*
@@ -259,7 +279,7 @@ export const addProduct = async (req, res) => {
 
     // Create product-category associations
     await tx.insert(productCategories).values(
-      categoryIds.map((categoryId) => ({
+      categoryIds.map((categoryId: number) => ({
         productId: insertedProduct.id,
         categoryId,
       }))
@@ -279,7 +299,7 @@ export const addProduct = async (req, res) => {
     .innerJoin(categories, eq(categories.id, productCategories.categoryId))
     .where(eq(productCategories.productId, newProduct.id));
 
-  setAuthCookies(res, { id: newProduct.id });
+  setAuthCookies(res, { id: newProduct.id.toString() });
 
   // Return success response with product data
   res.json({
@@ -343,7 +363,7 @@ export const addProduct = async (req, res) => {
  * }
  */
 
-export const editProduct = async (req, res) => {
+export const editProduct = async (req: Request, res: Response) => {
   const { id, name, price, categoryIds } = req.body;
 
   const existingProduct = await db
@@ -352,10 +372,11 @@ export const editProduct = async (req, res) => {
     .where(eq(products.id, id));
 
   if (existingProduct.length === 0) {
-    return res.status(404).json({
+    res.status(404).json({
       message: "Product not found",
       status: "error",
     });
+    return;
   }
 
   /*
@@ -460,7 +481,7 @@ export const editProduct = async (req, res) => {
  *   "status": "error"
  * }
  */
-export const deleteProduct = async (req, res) => {
+export const deleteProduct = async (req: Request, res: Response) => {
   const { id } = req.query;
 
   const existing = await db
@@ -469,15 +490,16 @@ export const deleteProduct = async (req, res) => {
     .where(eq(products.id, Number(id)));
 
   if (existing.length === 0) {
-    return res.status(404).json({
+    res.status(404).json({
       message: "Product not found",
       status: "error",
     });
+    return;
   }
 
   const deletedProduct = await db
     .delete(products)
-    .where(eq(products.id, id))
+    .where(eq(products.id, Number(id)))
     .returning();
 
   res.json({

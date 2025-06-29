@@ -1,12 +1,18 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
 
-export const authenticateAccessToken = (req, res, next) => {
+export const authenticateAccessToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   //   const accessToken = req?.cookies?.access_token;
 
   const accessToken = req?.cookies?.access_token;
 
   if (!accessToken) {
-    return res.status(401).json({ error: "Access token missing" });
+    res.status(401).json({ error: "Access token missing" });
+    return;
   }
 
   // manually parsing the cookies
@@ -19,10 +25,11 @@ export const authenticateAccessToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(accessToken, "mySecret");
-    req.user = decoded; // you can access this in route
+    (req as Request & { user?: string | JwtPayload }).user = decoded;
 
     next(); // ✅ Token valid, continue
   } catch (err) {
-    return res.status(403).json({ error: "Invalid or expired token" });
+    res.status(403).json({ error: "Invalid or expired token" });
+    return;
   }
 };
