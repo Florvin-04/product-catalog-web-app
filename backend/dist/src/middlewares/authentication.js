@@ -6,8 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authenticateAccessToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const authenticateAccessToken = (req, res, next) => {
-    //   const accessToken = req?.cookies?.access_token;
     var _a;
+    console.log("authenticateAccessToken");
+    //   const accessToken = req?.cookies?.access_token;
     const accessToken = (_a = req === null || req === void 0 ? void 0 : req.cookies) === null || _a === void 0 ? void 0 : _a.access_token;
     if (!accessToken) {
         res.status(401).json({ error: "Access token missing" });

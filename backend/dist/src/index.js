@@ -8,7 +8,6 @@ const express_1 = __importDefault(require("express"));
 const categoryController_js_1 = require("./controllers/categoryController.js");
 const productController_js_1 = require("./controllers/productController.js");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const authentication_1 = require("./middlewares/authentication");
 const app = (0, express_1.default)();
 const port = 5000;
 const allowedOrigins = ["http://localhost:5173"];
@@ -52,7 +51,7 @@ Product Routes
 - DELETE /api/product: Delete a product by ID
 
 */
-app.get("/api/products", authentication_1.authenticateAccessToken, productController_js_1.getProducts);
+app.get("/api/products", productController_js_1.getProducts);
 app.post("/api/product/add", productController_js_1.addProduct);
 app.put("/api/product", productController_js_1.editProduct);
 app.delete("/api/product", productController_js_1.deleteProduct);

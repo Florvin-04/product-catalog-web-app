@@ -20,8 +20,8 @@ const setAuth_js_1 = require("../middlewares/setAuth.js");
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     let { categoryIds, name: productNameSearch } = req.query;
-    const { user } = req;
-    console.log("user", user);
+    // const { user } = req;
+    // console.log("user", user);
     const categoryIdsArray = categoryIds ? JSON.parse(categoryIds) : [];
     // Parse categoryIds if provided
     if (categoryIds) {

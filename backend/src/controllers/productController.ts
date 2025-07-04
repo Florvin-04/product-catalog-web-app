@@ -61,14 +61,14 @@ interface GetProductsRequest extends Request {
     name?: string;
   };
 
-  user?: string | JwtPayload;
+  // user?: string | JwtPayload;
 }
 
 export const getProducts = async (req: GetProductsRequest, res: Response) => {
   let { categoryIds, name: productNameSearch } = req.query;
-  const { user } = req;
+  // const { user } = req;
 
-  console.log("user", user);
+  // console.log("user", user);
 
   const categoryIdsArray: number[] = categoryIds ? JSON.parse(categoryIds) : [];
 

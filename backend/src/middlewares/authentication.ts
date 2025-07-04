@@ -6,6 +6,7 @@ export const authenticateAccessToken = (
   res: Response,
   next: NextFunction
 ) => {
+  console.log("authenticateAccessToken");
   //   const accessToken = req?.cookies?.access_token;
 
   const accessToken = req?.cookies?.access_token;

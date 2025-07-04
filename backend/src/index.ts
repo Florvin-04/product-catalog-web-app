@@ -11,7 +11,6 @@ import {
   getProducts,
 } from "./controllers/productController.js";
 import cookieParser from "cookie-parser";
-import { authenticateAccessToken } from "./middlewares/authentication";
 
 const app = express();
 const port = 5000;
@@ -69,7 +68,7 @@ Product Routes
 
 */
 
-app.get("/api/products", authenticateAccessToken, getProducts);
+app.get("/api/products", getProducts);
 app.post("/api/product/add", addProduct);
 app.put("/api/product", editProduct);
 app.delete("/api/product", deleteProduct);

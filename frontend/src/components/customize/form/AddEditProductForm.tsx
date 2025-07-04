@@ -166,7 +166,7 @@ const AddEditProductForm = (props: AddEditProductFormProps) => {
               <FormLabel>Categories</FormLabel>
               <FormControl>
                 <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild disabled={isLoading}>
+                  <PopoverTrigger asChild>
                     <Button
                       variant="outline"
                       role="combobox"
