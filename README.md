@@ -58,7 +58,7 @@ Create `.env` files in both frontend and backend directories:
 **Frontend (.env)**
 exactly like this to run locally
 ```bash
-VITE_API_URL=http://localhost:5000/
+VITE_API_URL=http://localhost:5001/
 ```
 
 **Backend (.env)**
@@ -69,7 +69,7 @@ DATABASE_URL=postgresql://user:password@localhost:5432/database_name
 
 ## Running the Application
 
-- **Backend**: http://localhost:5000  
+- **Backend**: http://localhost:5001 
 - **Frontend**: http://localhost:5173
 
 1. Start both frontend and backend servers:

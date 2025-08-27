@@ -14,7 +14,7 @@ import { authenticateAccessToken } from "./middlewares/authentication.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
-const port = 5000;
+const port = 5001;
 
 const allowedOrigins = ["http://localhost:5173"];
 
@@ -69,7 +69,7 @@ Product Routes
 
 */
 
-app.get("/api/products", getProducts);
+app.get("/api/products", authenticateAccessToken, getProducts);
 app.post("/api/product/add", addProduct);
 app.put("/api/product", editProduct);
 app.delete("/api/product", deleteProduct);
